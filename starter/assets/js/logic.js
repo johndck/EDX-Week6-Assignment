@@ -11,6 +11,7 @@ const playerScore = document.querySelector("#initials");
 const storeScoreButton = document.querySelector("#submit");
 const counterDisplay = document.querySelector("#time");
 const finalTitle = document.querySelector("#final-title");
+const feedbackSection = document.querySelector("#feedback");
 let questionCounter;
 let choiceAnswer;
 let quizScore;
@@ -38,6 +39,7 @@ function countdownTimer() {
       questions.classList.add("hide");
       endQuiz.classList.remove("hide");
       finalScore.textContent = quizScore;
+      feedbackSection.classList.add("hide");
       finalTitle.textContent = "Out of Time!";
       counterDisplay.textContent = 0;
     }
@@ -48,6 +50,7 @@ function getQuestions() {
   if (questionCounter === quizQuestions.length) {
     questions.classList.add("hide");
     endQuiz.classList.remove("hide");
+    feedbackSection.classList.add("hide");
     finalScore.textContent = quizScore;
     return;
   }
@@ -68,9 +71,6 @@ function getQuestions() {
       answerOptions.appendChild(option);
     }
   } while (questionCounter > quizQuestions.length);
-
-  // Add logic to deal with end of questions
-  // Add logic to deal with time running out
 }
 
 startButton.addEventListener("click", startQuiz);
@@ -79,22 +79,44 @@ function checkOption() {
   questionCounter++;
   let selection = this.dataset.answerKey;
   // Compare selected answers to the correct answer
+
+  // If correct answer picked:
   if (parseInt(selection) === parseInt(choiceAnswer)) {
     quizScore += 5;
     let children = answerOptions.querySelectorAll(".answerOptions");
     for (let i = children.length - 1; i >= 0; i--) {
       children[i].remove();
     }
+    feedbackSection.classList.remove("hide");
+    feedbackSection.textContent = "Correct answer!";
+    // hide feedback after a second
+    setTimeout(() => {
+      feedbackSection.classList.add("hide");
+    }, 1000);
     getQuestions();
     return;
+
+    // Wrong answer picked but over 10 seconds left
   } else if (timeRemaining >= 11) {
     timeRemaining -= 10;
+
+    feedbackSection.classList.remove("hide");
+    feedbackSection.textContent = "Wrong answer!";
+    // hide feedback after a second
+
+    setTimeout(() => {
+      feedbackSection.classList.add("hide");
+    }, 1000);
+    getQuestions();
+
     let children = answerOptions.querySelectorAll(".answerOptions");
     for (let i = children.length - 1; i >= 0; i--) {
       children[i].remove();
     }
     getQuestions();
     return;
+
+    // 10 seconds left and wrong answer - out of time
   } else {
     timeRemaining = 1;
   }
