@@ -26,6 +26,7 @@ const quizQuestions = [
   },
 ];
 
+/*
 console.log(quizQuestions.length);
 
 for (let i = 0; i < quizQuestions.length; i++) {
@@ -39,7 +40,7 @@ for (let i = 0; i < quizQuestions.length; i++) {
 
 // currentQuestionNo = 0;
 
-/*
+
 Start quiz
 
 - set the Score to 0
@@ -52,7 +53,8 @@ Start quiz
 - reduce time (if wrong)
 - show next question
 
-*/
+
+
 
 const startDisplay = document.querySelector("#start-screen");
 const startButton = document.querySelector("#start");
@@ -99,7 +101,7 @@ function checkOption() {
   getQuestions();
 }
 
-/*
+
   let displayQuestion = true;
 
   for (let i = 0; i < quizQuestions.length && displayQuestion; i++) {
