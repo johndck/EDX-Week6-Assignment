@@ -1,11 +1,4 @@
-// inital check everything is working:
-
-console.log(quizQuestions.length);
-
-for (let i = 0; i < quizQuestions.length; i++) {
-  let currentQuestionNo = i + 1;
-  console.log(`${currentQuestionNo} = ${quizQuestions[i].question}`);
-}
+// Create all the dom elements required:
 
 const startDisplay = document.querySelector("#start-screen");
 const startButton = document.querySelector("#start");
@@ -16,9 +9,12 @@ const endQuiz = document.querySelector("#end-screen");
 const finalScore = document.querySelector("#final-score");
 const playerScore = document.querySelector("#initials");
 const storeScoreButton = document.querySelector("#submit");
+const counterDisplay = document.querySelector("#time");
+const finalTitle = document.querySelector("#final-title");
 let questionCounter;
 let choiceAnswer;
 let quizScore;
+let timeRemaining = 30;
 
 function startQuiz() {
   startDisplay.classList.remove("start");
@@ -26,7 +22,26 @@ function startQuiz() {
   questions.classList.remove("hide");
   questionCounter = 0;
   quizScore = 0;
+  countdownTimer();
   getQuestions();
+}
+
+// Create countdown timer
+
+function countdownTimer() {
+  const downer = setInterval(function () {
+    counterDisplay.textContent = timeRemaining;
+    timeRemaining--;
+
+    if (timeRemaining === 0) {
+      clearInterval(downer);
+      questions.classList.add("hide");
+      endQuiz.classList.remove("hide");
+      finalScore.textContent = quizScore;
+      finalTitle.textContent = "Out of Time!";
+      counterDisplay.textContent = 0;
+    }
+  }, 1000);
 }
 
 function getQuestions() {
@@ -64,24 +79,25 @@ function checkOption() {
   questionCounter++;
   let selection = this.dataset.answerKey;
   // Compare selected answers to the correct answer
-
   if (parseInt(selection) === parseInt(choiceAnswer)) {
     quizScore += 5;
-    console.log(quizScore);
+    let children = answerOptions.querySelectorAll(".answerOptions");
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].remove();
+    }
+    getQuestions();
+    return;
+  } else if (timeRemaining >= 11) {
+    timeRemaining -= 10;
+    let children = answerOptions.querySelectorAll(".answerOptions");
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].remove();
+    }
+    getQuestions();
+    return;
   } else {
-    alert("time penalty will be added in here");
+    timeRemaining = 1;
   }
-
-  // remove previous buttons from the dom
-
-  let children = answerOptions.querySelectorAll(".answerOptions");
-  for (let i = children.length - 1; i >= 0; i--) {
-    children[i].remove();
-
-    // Add logic to display result of the selection
-    // Add logic to calculate score
-  }
-  getQuestions();
 }
 
 // Store scores into local storage
@@ -89,10 +105,20 @@ function checkOption() {
 storeScoreButton.addEventListener("click", function (event) {
   event.preventDefault();
 
+  if (playerScore.value.length === 0) {
+    alert("Please provide your initials to store your score.");
+    return;
+  }
+
+  if (playerScore.value.length > 3) {
+    alert("You can only have 3 characters in your initials");
+    playerScore.value = "";
+    return;
+  }
+
   // Do scores exist?
 
   let doScoresExist = JSON.parse(localStorage.getItem("codeQuizScore"));
-  alert(`${doScoresExist}`);
 
   if (doScoresExist == null) {
     let newQuizScore = JSON.stringify([
