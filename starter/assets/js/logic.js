@@ -13,20 +13,27 @@ const questions = document.querySelector("#questions");
 const questionTitle = document.querySelector("#question-title");
 const answerOptions = document.querySelector("#choices");
 const endQuiz = document.querySelector("#end-screen");
+const finalScore = document.querySelector("#final-score");
+const playerScore = document.querySelector("#initials");
+const storeScoreButton = document.querySelector("#submit");
 let questionCounter;
 let choiceAnswer;
+let quizScore;
 
 function startQuiz() {
   startDisplay.classList.remove("start");
   startDisplay.classList.add("hide");
   questions.classList.remove("hide");
   questionCounter = 0;
+  quizScore = 0;
   getQuestions();
 }
 
 function getQuestions() {
   if (questionCounter === quizQuestions.length) {
-    alert("score screen");
+    questions.classList.add("hide");
+    endQuiz.classList.remove("hide");
+    finalScore.textContent = quizScore;
     return;
   }
 
@@ -55,9 +62,15 @@ startButton.addEventListener("click", startQuiz);
 
 function checkOption() {
   questionCounter++;
-  console.log(`correct answer: ${choiceAnswer}`);
   let selection = this.dataset.answerKey;
-  console.log(`selected answer: ${selection}`);
+  // Compare selected answers to the correct answer
+
+  if (parseInt(selection) === parseInt(choiceAnswer)) {
+    quizScore += 5;
+    console.log(quizScore);
+  } else {
+    alert("time penalty will be added in here");
+  }
 
   // remove previous buttons from the dom
 
@@ -71,15 +84,30 @@ function checkOption() {
   getQuestions();
 }
 
-// copy of for of loop
-/*
-for (let choice of choicesOptions) {
-  const option = document.createElement("button");
-  //option.classList.add("choices");
-  option.textContent = choice;
-  option.classList.add("answerOptions");
-  option.addEventListener("click", checkOption);
-  option.dataset.list = choiceAnswer;
-  answerOptions.appendChild(option);
-}
-*/
+// Store scores into local storage
+
+storeScoreButton.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  // Do scores exist?
+
+  let doScoresExist = JSON.parse(localStorage.getItem("codeQuizScore"));
+  alert(`${doScoresExist}`);
+
+  if (doScoresExist == null) {
+    let newQuizScore = JSON.stringify([
+      {
+        player: playerScore.value,
+        score: quizScore,
+      },
+    ]);
+    localStorage.setItem("codeQuizScore", newQuizScore);
+  } else {
+    let newQuizScore = { player: playerScore.value, score: quizScore };
+    doScoresExist.push(newQuizScore);
+    let updateScores = JSON.stringify(doScoresExist);
+    localStorage.setItem("codeQuizScore", updateScores);
+  }
+
+  window.location.href = "/starter/highscores.html";
+});
