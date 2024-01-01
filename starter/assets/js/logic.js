@@ -12,6 +12,7 @@ const startButton = document.querySelector("#start");
 const questions = document.querySelector("#questions");
 const questionTitle = document.querySelector("#question-title");
 const answerOptions = document.querySelector("#choices");
+const endQuiz = document.querySelector("#end-screen");
 let questionCounter;
 let choiceAnswer;
 
@@ -24,6 +25,11 @@ function startQuiz() {
 }
 
 function getQuestions() {
+  if (questionCounter === quizQuestions.length) {
+    alert("score screen");
+    return;
+  }
+
   do {
     let questionText = quizQuestions[questionCounter].question;
     questionTitle.textContent = questionText;
