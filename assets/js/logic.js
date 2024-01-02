@@ -157,5 +157,5 @@ storeScoreButton.addEventListener("click", function (event) {
     localStorage.setItem("codeQuizScore", updateScores);
   }
 
-  window.location.href = "/starter/highscores.html";
+  window.location.href = "highscores.html";
 });
