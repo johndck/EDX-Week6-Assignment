@@ -1,3 +1,7 @@
+// Here is the code to display the highscores on the highscores page
+
+// Pull in the required dom elements
+
 const scoresList = document.querySelector("#highscores");
 const clearScores = document.querySelector("#clear");
 

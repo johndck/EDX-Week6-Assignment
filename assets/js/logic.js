@@ -1,4 +1,4 @@
-// Create all the dom elements required:
+// Pull in all the dom element required:
 
 const startDisplay = document.querySelector("#start-screen");
 const startButton = document.querySelector("#start");
@@ -12,10 +12,20 @@ const storeScoreButton = document.querySelector("#submit");
 const counterDisplay = document.querySelector("#time");
 const finalTitle = document.querySelector("#final-title");
 const feedbackSection = document.querySelector("#feedback");
+
+// Create some global variables used in the functions:
+
 let questionCounter;
 let choiceAnswer;
 let quizScore;
+
+// For now with 3 questions the timer is set for 30 seconds:
+
 let timeRemaining = 30;
+
+// Key functions for the quiz
+
+// Start the quiz - this is called by the start quiz button.
 
 function startQuiz() {
   startDisplay.classList.remove("start");
@@ -46,6 +56,8 @@ function countdownTimer() {
   }, 1000);
 }
 
+// Run the question cycle
+
 function getQuestions() {
   if (questionCounter === quizQuestions.length) {
     questions.classList.add("hide");
@@ -54,6 +66,8 @@ function getQuestions() {
     finalScore.textContent = quizScore;
     return;
   }
+
+  // Using the do while loop so that it runs once - this is an area for improvement with tutor.
 
   do {
     let questionText = quizQuestions[questionCounter].question;
@@ -73,7 +87,11 @@ function getQuestions() {
   } while (questionCounter > quizQuestions.length);
 }
 
+// Event listener to start the quiz
+
 startButton.addEventListener("click", startQuiz);
+
+// This function reviews the selected button & temporarily shows the result.
 
 function checkOption() {
   questionCounter++;
@@ -127,10 +145,14 @@ function checkOption() {
 storeScoreButton.addEventListener("click", function (event) {
   event.preventDefault();
 
+  // make sure the input box is not blank
+
   if (playerScore.value.length === 0) {
     alert("Please provide your initials to store your score.");
     return;
   }
+
+  // only allow 3 characters - numbers or letters
 
   if (playerScore.value.length > 3) {
     alert("You can only have 3 characters in your initials");
@@ -138,7 +160,9 @@ storeScoreButton.addEventListener("click", function (event) {
     return;
   }
 
-  // Do scores exist?
+  // check if there are any scores already in local storage.
+  // if not create a score
+  // otherwise add to an existing saved score
 
   let doScoresExist = JSON.parse(localStorage.getItem("codeQuizScore"));
 
